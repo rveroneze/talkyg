@@ -6,8 +6,7 @@
 #include <fstream>
 #include <sstream>
 #include <algorithm>
-#include <unordered_map>  // usado para o arquivo config.txt
-#include <unordered_set> // usado para guardar os itemsets minerados
+#include <unordered_map>  // usado para o arquivo config.txt e para guardar os itemsets minerados
 #include <vector>
 #include <deque>
 
@@ -25,13 +24,13 @@ struct item_t
 	data_t value;
 };
 
-struct itemset_t
+struct node_t
 {
 	col_t length;
 	col_t *idxItems;
 	row_t sup;
 	row_t *tidset;
-	deque<itemset_t *> *children;
+	deque<node_t *> *children;
 };
 
-typedef itemset_t *pitemset_t;
+typedef node_t *pnode_t;

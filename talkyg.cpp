@@ -1,13 +1,13 @@
 #include "talkyg.h"
 
-float runTalkyG(const vector<item_t> &items, deque<pitemset_t> *root, const row_t &minsup)
+float runTalkyG(const vector<item_t> &items, deque<pnode_t> *root, const row_t &minsup)
 {
 	clock_t clocks = clock();
 
     // loop over children of root from right-to-left
-    for (deque<pitemset_t>::reverse_iterator rit = root->rbegin(); rit!=root->rend(); ++rit)
+    for (deque<pnode_t>::reverse_iterator rit = root->rbegin(); rit!=root->rend(); ++rit)
     {
-        // process the itemset
+        // process the pattern
         printPattern( (*rit), items );
 
         // discover the subtree below rit
@@ -18,21 +18,21 @@ float runTalkyG(const vector<item_t> &items, deque<pitemset_t> *root, const row_
 	return ((float)clocks) / CLOCKS_PER_SEC;
 }
 
-void extend(const vector<item_t> &items, deque<pitemset_t> *father, const row_t &minsup, deque<pitemset_t>::reverse_iterator &curr)
+void extend(const vector<item_t> &items, deque<pnode_t> *father, const row_t &minsup, deque<pnode_t>::reverse_iterator &curr)
 {
-    (*curr)->children = new deque<pitemset_t>;
+    (*curr)->children = new deque<pnode_t>;
 
     // loop over siblings of curr from left-to-right
-    for (deque<pitemset_t>::iterator other = curr.base(); other!=father->end(); ++other)
+    for (deque<pnode_t>::iterator other = curr.base(); other!=father->end(); ++other)
     {
-        pitemset_t itemset = getNextGenerator(curr, other, minsup);
-        if (itemset != NULL) (*curr)->children->push_back(itemset);
+        pnode_t node = getNextGenerator(curr, other, minsup);
+        if (node != NULL) (*curr)->children->push_back(node);
     }
 
     // loop over children of curr from right-to-left
-    for (deque<pitemset_t>::reverse_iterator child = (*curr)->children->rbegin(); child!=(*curr)->children->rend(); ++child)
+    for (deque<pnode_t>::reverse_iterator child = (*curr)->children->rbegin(); child!=(*curr)->children->rend(); ++child)
     {
-        // process the itemset
+        // process the pattern
         printPattern( (*child), items );
 
         // discover the subtree below child
@@ -40,7 +40,7 @@ void extend(const vector<item_t> &items, deque<pitemset_t> *father, const row_t 
     }
 
     // Deallocating memory
-    for (deque<pitemset_t>::reverse_iterator child = (*curr)->children->rbegin(); child!=(*curr)->children->rend(); ++child)
+    for (deque<pnode_t>::reverse_iterator child = (*curr)->children->rbegin(); child!=(*curr)->children->rend(); ++child)
     {
         delete [] (*child)->idxItems;
         delete [] (*child)->tidset;
@@ -49,9 +49,9 @@ void extend(const vector<item_t> &items, deque<pitemset_t> *father, const row_t 
     delete (*curr)->children;
 }
 
-pitemset_t getNextGenerator(const deque<pitemset_t>::reverse_iterator &curr, const deque<pitemset_t>::iterator &other, const row_t &minsup)
+pnode_t getNextGenerator(const deque<pnode_t>::reverse_iterator &curr, const deque<pnode_t>::iterator &other, const row_t &minsup)
 {
-    pitemset_t cand = new itemset_t;
+    pnode_t cand = new node_t;
 
     // COMPUTE the candidate tidset
     row_t *aux;
@@ -70,7 +70,7 @@ pitemset_t getNextGenerator(const deque<pitemset_t>::reverse_iterator &curr, con
 	cand->sup = aux - cand->tidset;
     
     // TEST the candidate tidset
-    if (cand->sup < minsup || cand->sup == smaller || !IsCanonical(cand->tidset, cand->sup))
+    if (cand->sup < minsup || cand->sup == smaller)
     {
         delete [] cand->tidset;
         delete cand;
@@ -84,6 +84,8 @@ pitemset_t getNextGenerator(const deque<pitemset_t>::reverse_iterator &curr, con
     for (i = 0; i < (*curr)->length; ++i) cand->idxItems[i] = (*curr)->idxItems[i];
     cand->idxItems[i] = (*other)->idxItems[i-1];
 
+    //  || !IsCanonical(cand->tidset, cand->sup)
+
     return cand;
 }
 
@@ -96,6 +98,6 @@ bool IsCanonical(const row_t *tidset, const row_t &sup)
         snprintf(buffer, SIZE_BUFFER, "%d ", tidset[i]);
         s = s + buffer;
     }
-    if (g_st.count(s) > 0) return false;
+    //if (g_st.count(s) > 0) return false;
     return true;
 }

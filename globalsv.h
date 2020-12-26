@@ -10,4 +10,4 @@ extern unsigned short g_output;
 
 extern unsigned g_cont;
 extern ofstream g_filebics;
-extern unordered_set<string> g_st;
+//extern unordered_map<string, sss> g_st;

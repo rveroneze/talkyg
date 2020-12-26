@@ -5,7 +5,7 @@
 
 bool readDataset(const string &dataSetName, dataset_t &matrix, row_t &n, col_t &m);
 bool readConfigFile();
-vector<item_t> createVerticalRepresentationWithFItems(const dataset_t &D, const row_t &n, const col_t &m, const row_t &minsup, deque<pitemset_t> *itemsets);
+vector<item_t> createVerticalRepresentationWithFItems(const dataset_t &D, const row_t &n, const col_t &m, const row_t &minsup, deque<pnode_t> *root);
 
 int main(int argc, char* argv[])
 {
@@ -46,7 +46,7 @@ int main(int argc, char* argv[])
 	printf("\nDataset loaded: %dx%d\n\n", n, m);
 
 	cout << "Creating the vertical representation of the dataset..." << endl;
-	deque<pitemset_t> *root = new deque<pitemset_t>;
+	deque<pnode_t> *root = new deque<pnode_t>;
 	vector<item_t> items = createVerticalRepresentationWithFItems(matrix, n, m, minsup, root);
 	cout << "Number of Frequent Items = " << items.size() << endl;
 
@@ -150,8 +150,8 @@ bool readConfigFile()
 	return true;
 }
 
-// Creates the vertical representation of dataset, ignoring the infrequent itemsets
-vector<item_t> createVerticalRepresentationWithFItems(const dataset_t &D, const row_t &n, const col_t &m, const row_t &minsup, deque<pitemset_t> *itemsets)
+// Creates the vertical representation of dataset, ignoring the infrequent items
+vector<item_t> createVerticalRepresentationWithFItems(const dataset_t &D, const row_t &n, const col_t &m, const row_t &minsup, deque<pnode_t> *root)
 {
 	col_t countItems = 0;
 	vector<item_t> items;
@@ -184,14 +184,14 @@ vector<item_t> createVerticalRepresentationWithFItems(const dataset_t &D, const 
 					item.value = rwp[p1].first;
 					items.push_back(item);
 
-					pitemset_t itemset = new itemset_t;
-					itemset->length = 1;
-					itemset->idxItems = new col_t[1];
-					itemset->idxItems[0] = countItems;
-					itemset->sup = support;
-					itemset->tidset = new row_t[itemset->sup];
-					for (row_t i2 = p1; i2 <= p2; ++i2) itemset->tidset[i2 - p1] = rwp[i2].second;
-					itemsets->push_back(itemset);
+					pnode_t node = new node_t;
+					node->length = 1;
+					node->idxItems = new col_t[1];
+					node->idxItems[0] = countItems;
+					node->sup = support;
+					node->tidset = new row_t[node->sup];
+					for (row_t i2 = p1; i2 <= p2; ++i2) node->tidset[i2 - p1] = rwp[i2].second;
+					root->push_back(node);
 
 					++countItems;
 				}
@@ -210,8 +210,8 @@ vector<item_t> createVerticalRepresentationWithFItems(const dataset_t &D, const 
 		cout << "value = " << items[i].value << endl;
 	}
 	cout << endl;
-	cout << "Itemsets contains:" << endl;
-	for (deque<pitemset_t>::iterator it = itemsets->begin(); it != itemsets->end(); ++it)
+	cout << "root contains:" << endl;
+	for (deque<pnode_t>::iterator it = root->begin(); it != root->end(); ++it)
 	{
 		cout << "idxItems = " << (*it)->idxItems[0] << ", ";
 		cout << "sup = " << (*it)->sup << ", ";

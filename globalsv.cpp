@@ -6,4 +6,4 @@ unsigned short g_output = 1; // format of the output file: 1 - matlab; 2 - pytho
 
 unsigned g_cont = 0; // number of patterns in the output
 ofstream g_filebics; // pointer to the output file
-unordered_set<string> g_st(MAX_PATTERNS); // store the mined itemsets
+//unordered_set<string> g_st(MAX_PATTERNS); // store the mined itemsets
