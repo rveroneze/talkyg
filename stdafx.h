@@ -7,6 +7,7 @@
 #include <sstream>
 #include <algorithm>
 #include <unordered_map>  // usado para o arquivo config.txt e para guardar os itemsets minerados
+#include <forward_list>
 #include <vector>
 #include <deque>
 
@@ -34,3 +35,10 @@ struct node_t
 };
 
 typedef node_t *pnode_t;
+
+
+struct itemset_t
+{
+	col_t length;
+	col_t *idxItems;
+};

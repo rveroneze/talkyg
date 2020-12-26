@@ -2,6 +2,7 @@
 
 float runTalkyG(const vector<item_t> &items, deque<pnode_t> *root, const row_t &minsup)
 {
+    g_st.reserve(NBUCKETS);
 	clock_t clocks = clock();
 
     // loop over children of root from right-to-left
@@ -42,7 +43,7 @@ void extend(const vector<item_t> &items, deque<pnode_t> *father, const row_t &mi
     // Deallocating memory
     for (deque<pnode_t>::reverse_iterator child = (*curr)->children->rbegin(); child!=(*curr)->children->rend(); ++child)
     {
-        delete [] (*child)->idxItems;
+        // the pointer (*child)->idxItems is used in the hash
         delete [] (*child)->tidset;
         delete (*child);
     }
@@ -84,20 +85,41 @@ pnode_t getNextGenerator(const deque<pnode_t>::reverse_iterator &curr, const deq
     for (i = 0; i < (*curr)->length; ++i) cand->idxItems[i] = (*curr)->idxItems[i];
     cand->idxItems[i] = (*other)->idxItems[i-1];
 
-    //  || !IsCanonical(cand->tidset, cand->sup)
+    // TEST the candidate itemset: it has a proper subset with the same support in the hash?
+    if (!IsGenerator(cand))
+    {
+        delete [] cand->tidset;
+        delete [] cand->idxItems;
+        delete cand;
+        return NULL;
+    }
 
     return cand;
 }
 
-bool IsCanonical(const row_t *tidset, const row_t &sup)
+// To compare less pairs of itemsets, I am using the tidset as the hash key
+bool IsGenerator(const pnode_t &node)
 {
     string s = "";
     char buffer[SIZE_BUFFER];
-    for (row_t i = 0; i < sup; ++i)
+    for (row_t i = 0; i < node->sup; ++i)
     {
-        snprintf(buffer, SIZE_BUFFER, "%d ", tidset[i]);
+        snprintf(buffer, SIZE_BUFFER, "%d ", node->tidset[i]);
         s = s + buffer;
     }
-    //if (g_st.count(s) > 0) return false;
+    if (g_st.count(s) > 0)
+    {
+        for (forward_list<itemset_t>::iterator it = g_st[s].begin(); it != g_st[s].end(); ++it )
+        {
+            if ((*it).length < node->length)
+            {
+                if (includes(node->idxItems, node->idxItems+node->length, (*it).idxItems, (*it).idxItems+(*it).length) ) return false;
+            }
+        }
+    }
+    itemset_t itemset;
+    itemset.length = node->length;
+    itemset.idxItems = node->idxItems;
+    g_st[s].push_front(itemset);
     return true;
 }

@@ -24,8 +24,8 @@ void printPattern(const pnode_t pattern, const vector<item_t> &items)
 		for (col_t i = 0; i < pattern->length; ++i)
 		{
 			col_t idx = pattern->idxItems[i];
-			g_filebics << items[idx].idx + 1 << "=" << items[idx].value << " " ;
-			//g_filebics << items[idx].idx + 1 << " " ;
+			// g_filebics << items[idx].idx + 1 << "=" << items[idx].value << " " ;
+			g_filebics << items[idx].idx + 1 << " " ;
 		}		
 		g_filebics << "];\n";
 	}
