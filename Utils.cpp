@@ -13,6 +13,9 @@ void openPrintFile(const string &filename)
 
 void printPattern(const pnode_t pattern, const vector<item_t> &items)
 {
+	if (g_minconf > 0 && getConfidence(pattern->tidset, pattern->sup) < g_minconf)
+		return;
+
 	++g_cont;
 
 	if (g_output == 1) // matlab
@@ -47,4 +50,28 @@ void printPattern(const pnode_t pattern, const vector<item_t> &items)
 void closePrintFile()
 {
 	g_filebics.close();
+}
+
+
+
+// Compute the confidence of a pattern
+double getConfidence(row_t *A, row_t size)
+{
+	unsigned int *contClass = new unsigned int[g_maxLabel];
+	for (unsigned short i = 0; i < g_maxLabel; ++i) contClass[i] = 0; // initialize vector
+
+	for (row_t i = 0; i < size; ++i) ++contClass[ g_classes[A[i]] ]; // counting the representativeness of each class label
+	
+	unsigned int maior = 0;
+	for (unsigned short i = 0; i < g_maxLabel; ++i)
+	{
+		if (contClass[i] > maior)
+		{
+			maior = contClass[i];
+		}
+	}
+
+	delete [] contClass;
+
+	return maior / (double) size;
 }

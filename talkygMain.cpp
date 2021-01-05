@@ -6,16 +6,19 @@
 bool readDataset(const string &dataSetName, dataset_t &matrix, row_t &n, col_t &m);
 bool readConfigFile();
 vector<item_t> createVerticalRepresentationWithFItems(const dataset_t &D, const row_t &n, const col_t &m, const row_t &minsup, deque<pnode_t> *root);
+bool readClassLabels(const string &fileName, const row_t &n);
 
 int main(int argc, char* argv[])
 {
-	if (argc != 4)
+	if (argc != 6)
 	{
 		cout << "\n!!! Wrong Arguments !!!" << endl << endl;
 		cout << "List of the arguments:" << endl;
 		cout << "1 - Dataset's filename;" << endl;
 		cout << "2 - minsup;" << endl;
 		cout << "3 - Output filename for the list of patterns;" << endl;
+		cout << "4 - Class labels' filename;" << endl;
+		cout << "5 - Minimum confidence [0,1];" << endl;
 		exit(1);
 	}
 
@@ -27,13 +30,16 @@ int main(int argc, char* argv[])
 		cout << "Output format (1 - matlab; 2 - python): " << g_output << endl;
 	}
 
-	row_t minsup= atoi(argv[2]);
+	row_t minsup = atoi(argv[2]);
+	g_minconf = atof(argv[5]);
 
 	// List the user parameters
 	cout << "\nArguments: " << endl;
 	cout << "Dataset's filename: " << argv[1] << endl;
 	cout << "minsup: " << minsup << endl;
 	cout << "File with the list of patterns: " << argv[3] << endl;
+	cout << "Class labels' filename: " << argv[4] << endl;
+	cout << "Minimum confidence: " << g_minconf << endl;
 
 	dataset_t matrix; // pointer to the dataset
 	row_t n; // number of dataset's rows
@@ -44,6 +50,15 @@ int main(int argc, char* argv[])
 		exit(1);
 	}
 	printf("\nDataset loaded: %dx%d\n\n", n, m);
+
+	// Read the class label of each sample
+	g_classes = new unsigned short[n];
+	if (!readClassLabels(argv[4], n))
+	{
+		cout << "\nClass labels' file was not loaded!";
+		exit(1);
+	}
+	printf("Class labels loaded\n\n");
 
 	cout << "Creating the vertical representation of the dataset..." << endl;
 	deque<pnode_t> *root = new deque<pnode_t>;
@@ -222,4 +237,31 @@ vector<item_t> createVerticalRepresentationWithFItems(const dataset_t &D, const 
 	*/
 
 	return items;
+}
+
+bool readClassLabels(const string &fileName, const row_t &n)
+{
+	// Read tha class label of each object, and
+	// set g_maxLabel
+
+	g_maxLabel = 0;
+
+	ifstream myStream;
+	myStream.open(fileName, ifstream::in);
+
+	if (!myStream.is_open())
+		return false;
+
+	//Storing the data
+	myStream.seekg(0);
+	for (row_t i = 0; i < n; ++i)
+	{
+		myStream >> g_classes[i];
+		if (g_classes[i] > g_maxLabel) g_maxLabel = g_classes[i];
+	}
+
+	myStream.close();
+	++g_maxLabel;
+
+	return true;
 }
