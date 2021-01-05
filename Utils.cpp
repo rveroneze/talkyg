@@ -55,14 +55,14 @@ void closePrintFile()
 
 
 // Compute the confidence of a pattern
-double getConfidence(row_t *A, row_t size)
+double getConfidence(const row_t *A, const row_t &size)
 {
-	unsigned int *contClass = new unsigned int[g_maxLabel];
+	row_t *contClass = new row_t[g_maxLabel];
 	for (unsigned short i = 0; i < g_maxLabel; ++i) contClass[i] = 0; // initialize vector
 
 	for (row_t i = 0; i < size; ++i) ++contClass[ g_classes[A[i]] ]; // counting the representativeness of each class label
 	
-	unsigned int maior = 0;
+	row_t maior = 0;
 	for (unsigned short i = 0; i < g_maxLabel; ++i)
 	{
 		if (contClass[i] > maior)
@@ -70,6 +70,15 @@ double getConfidence(row_t *A, row_t size)
 			maior = contClass[i];
 		}
 	}
+
+	/*
+	cout << "Confidence" << endl;
+	for (row_t i = 0; i < size; ++i)
+	{
+		cout << "Sample " << A[i] << ": " << g_classes[A[i]] << endl;
+	}
+	cout << maior << "/" << size << "=" << maior / (double) size << endl;
+	*/
 
 	delete [] contClass;
 

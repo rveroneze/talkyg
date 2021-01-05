@@ -11,5 +11,5 @@ unordered_map<string, forward_list<itemset_t>> g_st; // store the mined itemsets
 // ----- Variables for the search using class labels -----
 unsigned short *g_classes; // vector to store the class label of each object
 unsigned short g_maxLabel; // maximum label
-double g_minconf = 0;
+double g_minconf = 0; // minimum confidence
 // --------------------------------------------------------

@@ -239,11 +239,9 @@ vector<item_t> createVerticalRepresentationWithFItems(const dataset_t &D, const 
 	return items;
 }
 
+// Read tha class label of each object, and set g_maxLabel
 bool readClassLabels(const string &fileName, const row_t &n)
 {
-	// Read tha class label of each object, and
-	// set g_maxLabel
-
 	g_maxLabel = 0;
 
 	ifstream myStream;
@@ -262,6 +260,12 @@ bool readClassLabels(const string &fileName, const row_t &n)
 
 	myStream.close();
 	++g_maxLabel;
+
+	/*
+	cout << "Label of each sample:" << endl;
+	for (row_t i = 0; i < n; ++i) cout << "Sample " << i << ": " << g_classes[i] << endl;
+	cout << "g_maxLabel: " << g_maxLabel << endl;
+	*/
 
 	return true;
 }
