@@ -29,7 +29,7 @@ struct node_t
 {
 	col_t length;
 	col_t *idxItems;
-	row_t sup;
+	row_t sup, biggerSup;
 	row_t *tidset;
 	deque<node_t *> *children;
 };
