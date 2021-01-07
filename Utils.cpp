@@ -13,6 +13,9 @@ void openPrintFile(const string &filename)
 
 void printPattern(const pnode_t pattern, const vector<item_t> &items)
 {
+	if (g_minconf > 0 && pattern->biggerSup/(double)pattern->sup < g_minconf)
+		return;
+
 	++g_cont;
 
 	if (g_output == 1) // matlab

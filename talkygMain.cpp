@@ -31,13 +31,15 @@ int main(int argc, char* argv[])
 		cout << "Output format (1 - matlab; 2 - python): " << g_output << endl;
 	}
 
+	g_minconf = atof(argv[5]);
+
 	// List the user parameters
 	cout << "\nArguments: " << endl;
 	cout << "Dataset's filename: " << argv[1] << endl;
 	cout << "minsup: " << argv[2] << endl;
 	cout << "File with the list of patterns: " << argv[3] << endl;
 	cout << "Class labels' filename: " << argv[4] << endl;
-	cout << "5 - Minimum confidence: " << argv[5] << endl;
+	cout << "Minimum confidence: " << g_minconf << endl;
 
 	dataset_t matrix; // pointer to the dataset
 	row_t n; // number of dataset's rows
@@ -74,7 +76,7 @@ int main(int argc, char* argv[])
 	float tempo;
 	openPrintFile(argv[3]);
 	cout << "\nRunning..." << endl;
-	tempo = runTalkyG(items, root, 6);
+	tempo = runTalkyG(items, root);
 	closePrintFile();
 
 	cout << "\n\nRuntime(s): " << tempo << endl;
@@ -315,15 +317,15 @@ bool readMinSupsFile(const string &fileName, const row_t &n)
 	{
 		myStream >> label;
 		myStream >> g_minsups[label];
-		cout << "Label " << label << ": " << g_minsups[label] << endl;
+		//cout << "Label " << label << ": " << g_minsups[label] << endl;
 		if (g_minsups[label] < g_smallerMinsup) g_smallerMinsup = g_minsups[label];
 		if (g_minsups[label] > g_biggerMinsup) g_biggerMinsup = g_minsups[label];
 	}
 
 	myStream.close();
 
-	cout << "g_smallerMinsup = " << g_smallerMinsup << endl;
-	cout << "g_biggerMinsup = " << g_biggerMinsup << endl;
+	//cout << "g_smallerMinsup = " << g_smallerMinsup << endl;
+	//cout << "g_biggerMinsup = " << g_biggerMinsup << endl;
 
 	return true;
 }

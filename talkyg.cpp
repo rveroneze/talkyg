@@ -1,6 +1,6 @@
 #include "talkyg.h"
 
-float runTalkyG(const vector<item_t> &items, deque<pnode_t> *root, const row_t &minsup)
+float runTalkyG(const vector<item_t> &items, deque<pnode_t> *root)
 {
     g_st.reserve(NBUCKETS);
 	clock_t clocks = clock();
@@ -12,21 +12,21 @@ float runTalkyG(const vector<item_t> &items, deque<pnode_t> *root, const row_t &
         printPattern( (*rit), items );
 
         // discover the subtree below rit
-        extend(items, root, minsup, rit);
+        extend(items, root, rit);
     }
 
 	clocks = clock() - clocks;
 	return ((float)clocks) / CLOCKS_PER_SEC;
 }
 
-void extend(const vector<item_t> &items, deque<pnode_t> *father, const row_t &minsup, deque<pnode_t>::reverse_iterator &curr)
+void extend(const vector<item_t> &items, deque<pnode_t> *father, deque<pnode_t>::reverse_iterator &curr)
 {
     (*curr)->children = new deque<pnode_t>;
 
     // loop over siblings of curr from left-to-right
     for (deque<pnode_t>::iterator other = curr.base(); other!=father->end(); ++other)
     {
-        pnode_t node = getNextGenerator(curr, other, minsup);
+        pnode_t node = getNextGenerator(curr, other);
         if (node != NULL) (*curr)->children->push_back(node);
     }
 
@@ -37,7 +37,7 @@ void extend(const vector<item_t> &items, deque<pnode_t> *father, const row_t &mi
         printPattern( (*child), items );
 
         // discover the subtree below child
-        extend(items, (*curr)->children, minsup, child);
+        extend(items, (*curr)->children, child);
     }
 
     // Deallocating memory
@@ -50,7 +50,7 @@ void extend(const vector<item_t> &items, deque<pnode_t> *father, const row_t &mi
     delete (*curr)->children;
 }
 
-pnode_t getNextGenerator(const deque<pnode_t>::reverse_iterator &curr, const deque<pnode_t>::iterator &other, const row_t &minsup)
+pnode_t getNextGenerator(const deque<pnode_t>::reverse_iterator &curr, const deque<pnode_t>::iterator &other)
 {
     pnode_t cand = new node_t;
 
@@ -71,7 +71,14 @@ pnode_t getNextGenerator(const deque<pnode_t>::reverse_iterator &curr, const deq
 	cand->sup = aux - cand->tidset;
     
     // TEST the candidate tidset
-    if (cand->sup < minsup || cand->sup == smaller)
+    if (cand->sup == smaller)
+    {
+        delete [] cand->tidset;
+        delete cand;
+        return NULL;
+    }
+    cand->biggerSup = getbiggerSup(cand->tidset, cand->sup);
+    if (cand->biggerSup == 0)
     {
         delete [] cand->tidset;
         delete cand;
@@ -122,4 +129,28 @@ bool IsGenerator(const pnode_t &node)
     itemset.idxItems = node->idxItems;
     g_st[s].push_front(itemset);
     return true;
+}
+
+
+// Compute the bigger support of a pattern
+row_t getbiggerSup(const row_t *A, const row_t &size)
+{
+    unsigned short label;
+	row_t *support = new row_t[g_maxLabel], biggerSup = 0;
+	for (unsigned short i = 0; i < g_maxLabel; ++i) support[i] = 0; // initialize vector
+
+     // counting the representativeness of each class label
+	for (row_t i = 0; i < size; ++i)
+    {
+        label = g_classes[A[i]];
+        ++support[label];
+        if (support[label] >= g_minsups[label])
+        {
+            if (support[label] > biggerSup) biggerSup = support[label];
+        }
+    }
+
+	delete [] support;
+
+	return biggerSup;
 }
