@@ -50,7 +50,7 @@ int main(int argc, char* argv[])
             exit(1);
         }
         printf("Dataset loaded: %ldx%ld\n\n", n, m);
-        printData(matrix, n, m);
+        //printData(matrix, n, m);
     }
     else if (dataType == 3)
     {
@@ -60,7 +60,7 @@ int main(int argc, char* argv[])
             exit(1);
         }
         printf("Transaction dataset loaded: %ld x %ld\n", n, m);
-        printData(matrix, n, m);
+        //printData(matrix, n, m);
     }
 
 	cout << "Creating the vertical representation of the dataset..." << endl;

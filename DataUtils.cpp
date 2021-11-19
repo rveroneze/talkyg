@@ -165,6 +165,7 @@ vector<item_t> createVerticalRepresentationWithFItems(const dataset_t &D, const 
 		}
 	}
 
+	/*
 	cout << "Frequent Items:" << endl;
 	for (col_t i = 0; i < items.size(); ++i)
 	{
@@ -182,7 +183,7 @@ vector<item_t> createVerticalRepresentationWithFItems(const dataset_t &D, const 
 		for (row_t i = 0; i < (*it)->sup; ++i) cout << (*it)->tidset[i] << " ";
 		cout << endl;
 	}
-	
+	*/
 
 	return items;
 }
