@@ -104,7 +104,7 @@ bool IsGenerator(const pnode_t &node)
     char buffer[SIZE_BUFFER];
     for (row_t i = 0; i < node->sup; ++i)
     {
-        snprintf(buffer, SIZE_BUFFER, "%d ", node->tidset[i]);
+        snprintf(buffer, SIZE_BUFFER, "%ld ", node->tidset[i]);
         s = s + buffer;
     }
     if (g_st.count(s) > 0)
