@@ -63,11 +63,13 @@ double getConfidence(const row_t *A, const row_t &size)
 	for (row_t i = 0; i < size; ++i) ++contClass[ g_classes[A[i]] ]; // counting the representativeness of each class label
 	
 	row_t maior = 0;
+	unsigned short label;
 	for (unsigned short i = 0; i < g_maxLabel; ++i)
 	{
 		if (contClass[i] > maior)
 		{
 			maior = contClass[i];
+			label = i;
 		}
 	}
 
@@ -82,5 +84,6 @@ double getConfidence(const row_t *A, const row_t &size)
 
 	delete [] contClass;
 
+	if (g_ignoreLabel == label) return 0;
 	return maior / (double) size;
 }

@@ -9,7 +9,7 @@ bool readConfigFile();
 int main(int argc, char* argv[])
 {
 
-	if (argc != 7)
+	if (argc != 8)
 	{
 		cout << "\n!!! Wrong Arguments !!!" << endl << endl;
 		cout << "List of the arguments:" << endl;
@@ -19,6 +19,7 @@ int main(int argc, char* argv[])
 		cout << "4 - Output filename for the list of patterns;" << endl;
 		cout << "5 - Class labels' filename;" << endl;
 		cout << "6 - Minimum confidence [0,1];" << endl;
+		cout << "9 - Ignore biclusters with label x = ?;" << endl;
 		exit(1);
 	}
 
@@ -34,6 +35,7 @@ int main(int argc, char* argv[])
     short dataType = atoi(argv[2]);
     row_t minsup = atoi(argv[3]);
 	g_minconf = atof(argv[6]);
+	g_ignoreLabel = atoi(argv[7]);
 
 	// List the user parameters
 	cout << "\nArguments: " << endl;
@@ -43,6 +45,7 @@ int main(int argc, char* argv[])
 	cout << "File with the list of patterns: " << bicsFileName << endl;
 	cout << "Class labels' filename: " << labelFileName << endl;
 	cout << "Minimum confidence: " << g_minconf << endl;
+	cout << "Ignore biclusters with label x = "  << g_ignoreLabel << endl;
 
 	dataset_t matrix; // pointer to the dataset
 	row_t n; // number of dataset's rows

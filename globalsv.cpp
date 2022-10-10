@@ -12,4 +12,5 @@ unordered_map<string, forward_list<itemset_t>> g_st; // store the mined itemsets
 unsigned short *g_classes; // vector to store the class label of each object
 unsigned short g_maxLabel; // maximum label
 double g_minconf = 0; // minimum confidence
+unsigned short g_ignoreLabel; // patterns that represents label g_ignoreLabel will not be outputted
 // --------------------------------------------------------

@@ -16,4 +16,5 @@ extern unordered_map<string, forward_list<itemset_t>> g_st;
 extern unsigned short *g_classes;
 extern unsigned short g_maxLabel;
 extern double g_minconf;
+extern unsigned short g_ignoreLabel;
 // --------------------------------------------------------
