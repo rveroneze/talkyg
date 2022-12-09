@@ -11,8 +11,11 @@ float runTalkyG(const vector<item_t> &items, deque<pnode_t> *root)
         // process the pattern
         printPattern( (*rit), items );
 
-        // discover the subtree below rit
-        extend(items, root, rit);
+        if ((*rit)->biggerSup != (*rit)->sup)
+        {//biggerSup==sup means conf=100%. So, I am cutting the branch when I find a pattern with conf=100%.
+            // discover the subtree below rit
+            extend(items, root, rit);
+        }
     }
 
 	clocks = clock() - clocks;
