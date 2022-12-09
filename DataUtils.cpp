@@ -56,9 +56,9 @@ bool readTransDataset(const string &dataSetName, dataset_t &matrix, row_t &n, co
 	n = count(istreambuf_iterator<char>(myStream), istreambuf_iterator<char>(), '\n');
 
 	//Discovering the number of columns
-	row_t maior = 0, menor = LONG_MAX;
+	long maior = 0, menor = LONG_MAX;
     string line;
-    col_t dbltmp;
+    long dbltmp;
     myStream.seekg(0);
     for (row_t i = 0; i < n; ++i)
     {
