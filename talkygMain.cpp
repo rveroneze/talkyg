@@ -101,8 +101,14 @@ int main(int argc, char* argv[])
 	// Guarda qtd de bics e runtime num txt
 	ofstream myfile;
 	myfile.open("summary.txt", ofstream::app);
-	myfile << g_cont << '\t';
-	myfile << tempo << '\t';
+	myfile << g_cont << '\t'; // Number of patterns
+	myfile << tempo << '\t'; // Runtime in seconds
+	myfile << dataFileName << '\t'; // Dataset's filename
+	myfile << dataType << '\t'; // Dataset's type
+	myfile << minsupFileName << '\t'; // minsup
+	myfile << bicsFileName << '\t'; // File with the list of patterns
+	myfile << labelFileName << '\t'; // Class labels' filename
+	myfile << g_minconf << '\t'; // Minimum confidence
 	myfile << endl;
 	myfile.close();
 
